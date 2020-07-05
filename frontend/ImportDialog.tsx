@@ -15,6 +15,7 @@ import { isEmpty } from "lodash";
 import React from "react";
 import { headerListToObj } from "./header-util";
 import {
+  AIRTABLE_BLOCK_GQL_IMPORT_IMPORT_QUERY,
   AIRTABLE_BLOCK_GQL_IMPORT_JSON_PATH,
   useLocalStorage,
 } from "./local-storage-util";
@@ -34,7 +35,10 @@ function ImportDialog(props: {
   headers: Array<{ key: string; value: string }>;
 }) {
   const base = useBase();
-  const [query, setQuery] = React.useState("");
+  const [importQuery, setImportQuery] = useLocalStorage(
+    AIRTABLE_BLOCK_GQL_IMPORT_IMPORT_QUERY,
+    ""
+  );
   const [jsonPath, setJsonPath] = useLocalStorage(
     AIRTABLE_BLOCK_GQL_IMPORT_JSON_PATH,
     ""
@@ -93,9 +97,9 @@ function ImportDialog(props: {
       <Box display="flex" alignItems="center">
         <FormField label="Query" marginRight={interGridSpacing}>
           <Input
-            value={query}
+            value={importQuery}
             onChange={(e) => {
-              setQuery(e.target.value);
+              setImportQuery(e.target.value);
             }}
           ></Input>
         </FormField>
@@ -113,7 +117,7 @@ function ImportDialog(props: {
             let response = await fetch(props.url, {
               method: "post",
               headers: headerListToObj(props.headers),
-              body: JSON.stringify({ query }),
+              body: JSON.stringify({ importQuery }),
             });
             let responseData = await response.json();
             setQueryResponse(
@@ -174,7 +178,7 @@ function ImportDialog(props: {
       <Button
         onClick={() => {
           insertRecordsIntoTables(base, queryResponse);
-          insertQueryIntoQueriesTable(base, query, props.url);
+          insertQueryIntoQueriesTable(base, importQuery, props.url);
         }}
       >
         Import
