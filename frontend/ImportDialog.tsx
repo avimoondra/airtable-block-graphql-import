@@ -14,6 +14,10 @@ import { JSONPath } from "jsonpath-plus";
 import { isEmpty } from "lodash";
 import React from "react";
 import { headerListToObj } from "./header-util";
+import {
+  AIRTABLE_BLOCK_GQL_IMPORT_JSON_PATH,
+  useLocalStorage,
+} from "./local-storage-util";
 import { interGridSpacing } from "./style";
 import {
   findOrCreateTables,
@@ -31,7 +35,10 @@ function ImportDialog(props: {
 }) {
   const base = useBase();
   const [query, setQuery] = React.useState("");
-  const [jsonPath, setJsonPath] = React.useState("");
+  const [jsonPath, setJsonPath] = useLocalStorage(
+    AIRTABLE_BLOCK_GQL_IMPORT_JSON_PATH,
+    ""
+  );
   const [queryResponse, setQueryResponse] = React.useState({});
   const [previewTables, setPreviewTables] = React.useState<
     Map<string, Array<any>>

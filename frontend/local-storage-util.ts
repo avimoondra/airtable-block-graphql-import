@@ -1,5 +1,9 @@
 import React from "react";
 
+const prefix = "airtable-block-gql-import";
+export const AIRTABLE_BLOCK_GQL_IMPORT_HEADERS = `${prefix}-headers`;
+export const AIRTABLE_BLOCK_GQL_IMPORT_JSON_PATH = `${prefix}-json-path`;
+
 export function useLocalStorage(key, initialValue) {
   // State to store our value
   // Pass initial state function to useState so logic is only executed once

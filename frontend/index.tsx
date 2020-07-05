@@ -2,14 +2,17 @@ import { Box, Button, initializeBlock, useSynced } from "@airtable/blocks/ui";
 import React from "react";
 import GraphiQLWrapper from "./GraphiQLWrapper";
 import ImportDialog from "./ImportDialog";
-import { useLocalStorage } from "./local-storage-util";
+import {
+  AIRTABLE_BLOCK_GQL_IMPORT_HEADERS,
+  useLocalStorage,
+} from "./local-storage-util";
 
 function GraphqlImportBlock() {
   const [url, setUrl, canSetUrl] = useSynced("url");
   const [
     headers,
     setHeaders,
-  ] = useLocalStorage("airtable-block-gql-import-headers", [
+  ] = useLocalStorage(AIRTABLE_BLOCK_GQL_IMPORT_HEADERS, [
     { key: "Content-Type", value: "application/json" },
   ]);
   const [dialogOpen, setDialogOpen] = React.useState(false);
