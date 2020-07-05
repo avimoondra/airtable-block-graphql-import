@@ -117,7 +117,7 @@ function ImportDialog(props: {
             let response = await fetch(props.url, {
               method: "post",
               headers: headerListToObj(props.headers),
-              body: JSON.stringify({ importQuery }),
+              body: JSON.stringify({ query: importQuery }),
             });
             let responseData = await response.json();
             setQueryResponse(
