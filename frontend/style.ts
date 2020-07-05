@@ -1,0 +1,1 @@
+export const interGridSpacing = "4px"

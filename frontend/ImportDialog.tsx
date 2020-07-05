@@ -14,6 +14,7 @@ import { JSONPath } from "jsonpath-plus";
 import { isEmpty } from "lodash";
 import React from "react";
 import { headerListToObj } from "./header-util";
+import { interGridSpacing } from "./style";
 import {
   findOrCreateTables,
   insertQueryIntoQueriesTable,
@@ -83,7 +84,7 @@ function ImportDialog(props: {
       <Dialog.CloseButton />
       <Heading>Import</Heading>
       <Box display="flex" alignItems="center">
-        <FormField label="Query" marginRight="4px">
+        <FormField label="Query" marginRight={interGridSpacing}>
           <Input
             value={query}
             onChange={(e) => {
@@ -91,7 +92,7 @@ function ImportDialog(props: {
             }}
           ></Input>
         </FormField>
-        <FormField label="JSON path" marginRight="4px">
+        <FormField label="JSON path" marginRight={interGridSpacing}>
           <Input
             value={jsonPath}
             onChange={(e) => {
@@ -166,7 +167,7 @@ function ImportDialog(props: {
       <Button
         onClick={() => {
           insertRecordsIntoTables(base, queryResponse);
-          insertQueryIntoQueriesTable(base, query);
+          insertQueryIntoQueriesTable(base, query, props.url);
         }}
       >
         Import

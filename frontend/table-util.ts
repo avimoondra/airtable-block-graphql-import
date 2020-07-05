@@ -143,11 +143,15 @@ export const insertRecordsIntoTables = async (base: Base, json) => {
   });
 };
 
-export const insertQueryIntoQueriesTable = async (base: Base, query) => {
+export const insertQueryIntoQueriesTable = async (base: Base, query, url) => {
   let table = base.getTableByNameIfExists("queries");
   if (!table) {
     if (base.unstable_hasPermissionToCreateTable()) {
       const fields = [
+        {
+          name: "url",
+          type: FieldType.SINGLE_LINE_TEXT,
+        },
         {
           name: "query",
           type: FieldType.SINGLE_LINE_TEXT,
@@ -173,6 +177,7 @@ export const insertQueryIntoQueriesTable = async (base: Base, query) => {
   }
   if (table.checkPermissionsForCreateRecord()) {
     table.createRecordAsync({
+      url: url,
       query: query,
       timestamp: new Date(),
     });

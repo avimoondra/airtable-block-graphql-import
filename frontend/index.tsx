@@ -45,6 +45,16 @@ function GraphqlImportBlock() {
         ></ImportDialog>
       )}
       <GraphiQLWrapper
+        importButton={
+          <Button
+            variant="primary"
+            onClick={() => {
+              setDialogOpen(true);
+            }}
+          >
+            Import
+          </Button>
+        }
         url={url as string}
         headers={headers}
         setUrl={(newUrl: string) => {
@@ -54,15 +64,6 @@ function GraphqlImportBlock() {
         }}
         setHeaders={(newHeaders: Array<any>) => setHeaders(newHeaders)}
       ></GraphiQLWrapper>
-
-      <Button
-        variant="primary"
-        onClick={() => {
-          setDialogOpen(true);
-        }}
-      >
-        Import
-      </Button>
     </Box>
   );
 }

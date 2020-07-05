@@ -9,6 +9,7 @@ import GraphiQL from "graphiql";
 import { cloneDeep, filter, remove } from "lodash";
 import React from "react";
 import { headerListToObj } from "./header-util";
+import { interGridSpacing } from "./style";
 
 const graphiQLcss = `
 .graphiql-container,.graphiql-container button,.graphiql-container input{color:#141823;font-family:system,-apple-system,San Francisco,\\.SFNSDisplay-Regular,Segoe UI,Segoe,Segoe WP,Helvetica Neue,helvetica,Lucida Grande,arial,sans-serif;font-size:14px}.graphiql-container{display:flex;flex-direction:row;height:100%;margin:0;overflow:hidden;width:100%}.graphiql-container .editorWrap{display:flex;flex-direction:column;flex:1;overflow-x:hidden}.graphiql-container .title{font-size:18px}.graphiql-container .title em{font-family:georgia;font-size:19px}.graphiql-container .topBarWrap{display:flex;flex-direction:row}.graphiql-container .topBar{align-items:center;background:linear-gradient(#f7f7f7,#e2e2e2);border-bottom:1px solid #d0d0d0;cursor:default;display:flex;flex-direction:row;flex:1;height:34px;overflow-y:visible;padding:7px 14px 6px;user-select:none}.graphiql-container .toolbar{overflow-x:visible;display:flex}.graphiql-container .docExplorerShow,.graphiql-container .historyShow{background:linear-gradient(#f7f7f7,#e2e2e2);border-radius:0;border-bottom:1px solid #d0d0d0;border-right:none;border-top:none;color:#3b5998;cursor:pointer;font-size:14px;margin:0;padding:2px 20px 0 18px}.graphiql-container .docExplorerShow{border-left:1px solid rgba(0,0,0,.2)}.graphiql-container .historyShow{border-right:1px solid rgba(0,0,0,.2);border-left:0}.graphiql-container .docExplorerShow:before{border-left:2px solid #3b5998;border-top:2px solid #3b5998;content:"";display:inline-block;height:9px;margin:0 3px -1px 0;position:relative;transform:rotate(-45deg);width:9px}.graphiql-container .editorBar{display:flex;flex-direction:row;flex:1}.graphiql-container .queryWrap,.graphiql-container .resultWrap{display:flex;flex-direction:column;flex:1}.graphiql-container .resultWrap{border-left:1px solid #e0e0e0;flex-basis:1em;position:relative}.graphiql-container .docExplorerWrap,.graphiql-container .historyPaneWrap{background:#fff;box-shadow:0 0 8px rgba(0,0,0,.15);position:relative;z-index:3}.graphiql-container .historyPaneWrap{min-width:230px;z-index:5}.graphiql-container .docExplorerResizer{cursor:col-resize;height:100%;left:-5px;position:absolute;top:0;width:10px;z-index:10}.graphiql-container .docExplorerHide{cursor:pointer;font-size:18px;margin:-7px -8px -6px 0;padding:18px 16px 15px 12px;background:0;border:0;line-height:14px}.graphiql-container div .query-editor{flex:1;position:relative}.graphiql-container .secondary-editor{display:flex;flex-direction:column;height:30px;position:relative}.graphiql-container .secondary-editor-title{background:#eee;border-bottom:1px solid #d6d6d6;border-top:1px solid #e0e0e0;color:#777;font-variant:small-caps;font-weight:700;letter-spacing:1px;line-height:14px;padding:6px 0 8px 43px;text-transform:lowercase;user-select:none}.graphiql-container .codemirrorWrap,.graphiql-container .result-window{flex:1;height:100%;position:relative}.graphiql-container .footer{background:#f6f7f8;border-left:1px solid #e0e0e0;border-top:1px solid #e0e0e0;margin-left:12px;position:relative}.graphiql-container .footer:before{background:#eee;bottom:0;content:" ";left:-13px;position:absolute;top:-1px;width:12px}.result-window .CodeMirror{background:#f6f7f8}.graphiql-container .result-window .CodeMirror-gutters{background-color:#eee;border-color:#e0e0e0;cursor:col-resize}.graphiql-container .result-window .CodeMirror-foldgutter,.graphiql-container .result-window .CodeMirror-foldgutter-folded:after,.graphiql-container .result-window .CodeMirror-foldgutter-open:after{padding-left:3px}.graphiql-container .toolbar-button{background:#fdfdfd;background:linear-gradient(#f9f9f9,#ececec);border:0;border-radius:3px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.2),0 1px 0 hsla(0,0%,100%,.7),inset 0 1px #fff;color:#555;cursor:pointer;display:inline-block;margin:0 5px;padding:3px 11px 5px;text-decoration:none;text-overflow:ellipsis;white-space:nowrap;max-width:150px}.graphiql-container .toolbar-button:active{background:linear-gradient(#ececec,#d5d5d5);box-shadow:0 1px 0 hsla(0,0%,100%,.7),inset 0 0 0 1px rgba(0,0,0,.1),inset 0 1px 1px 1px rgba(0,0,0,.12),inset 0 0 5px rgba(0,0,0,.1)}.graphiql-container .toolbar-button.error{background:linear-gradient(#fdf3f3,#e6d6d7);color:#b00}.graphiql-container .toolbar-button-group{margin:0 5px;white-space:nowrap}.graphiql-container .toolbar-button-group>*{margin:0}.graphiql-container .toolbar-button-group>:not(:last-child){border-top-right-radius:0;border-bottom-right-radius:0}.graphiql-container .toolbar-button-group>:not(:first-child){border-top-left-radius:0;border-bottom-left-radius:0;margin-left:-1px}.graphiql-container .execute-button-wrap{height:34px;margin:0 14px 0 28px;position:relative}.graphiql-container .execute-button{background:linear-gradient(#fdfdfd,#d2d3d6);border-radius:17px;border:1px solid rgba(0,0,0,.25);box-shadow:0 1px 0 #fff;cursor:pointer;fill:#444;height:34px;margin:0;padding:0;width:34px}.graphiql-container .execute-button svg{pointer-events:none}.graphiql-container .execute-button:active{background:linear-gradient(#e6e6e6,#c3c3c3);box-shadow:0 1px 0 #fff,inset 0 0 2px rgba(0,0,0,.2),inset 0 0 6px rgba(0,0,0,.1)}.graphiql-container .toolbar-menu,.graphiql-container .toolbar-select{position:relative}.graphiql-container .execute-options,.graphiql-container .toolbar-menu-items,.graphiql-container .toolbar-select-options{background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.1),0 2px 4px rgba(0,0,0,.25);margin:0;padding:6px 0;position:absolute;z-index:100}.graphiql-container .execute-options{min-width:100px;top:37px;left:-1px}.graphiql-container .toolbar-menu-items{left:1px;margin-top:-1px;min-width:110%;top:100%;visibility:hidden}.graphiql-container .toolbar-menu-items.open{visibility:visible}.graphiql-container .toolbar-select-options{left:0;min-width:100%;top:-5px;visibility:hidden}.graphiql-container .toolbar-select-options.open{visibility:visible}.graphiql-container .execute-options>li,.graphiql-container .toolbar-menu-items>li,.graphiql-container .toolbar-select-options>li{cursor:pointer;display:block;margin:none;max-width:300px;overflow:hidden;padding:2px 20px 4px 11px;white-space:nowrap}.graphiql-container .execute-options>li.selected,.graphiql-container .history-contents>li:active,.graphiql-container .history-contents>li:hover,.graphiql-container .toolbar-menu-items>li.hover,.graphiql-container .toolbar-menu-items>li:active,.graphiql-container .toolbar-menu-items>li:hover,.graphiql-container .toolbar-select-options>li.hover,.graphiql-container .toolbar-select-options>li:active,.graphiql-container .toolbar-select-options>li:hover{background:#e10098;color:#fff}.graphiql-container .toolbar-select-options>li>svg{display:inline;fill:#666;margin:0 -6px 0 6px;pointer-events:none;vertical-align:middle}.graphiql-container .toolbar-select-options>li.hover>svg,.graphiql-container .toolbar-select-options>li:active>svg,.graphiql-container .toolbar-select-options>li:hover>svg{fill:#fff}.graphiql-container .CodeMirror-scroll{overflow-scrolling:touch}.graphiql-container .CodeMirror{color:#141823;font-family:Consolas,Inconsolata,Droid Sans Mono,Monaco,monospace;font-size:13px;height:100%;left:0;position:absolute;top:0;width:100%}.graphiql-container .CodeMirror-lines{padding:20px 0}.CodeMirror-hint-information .content{box-orient:vertical;color:#141823;display:flex;font-family:system,-apple-system,San Francisco,\\.SFNSDisplay-Regular,Segoe UI,Segoe,Segoe WP,Helvetica Neue,helvetica,Lucida Grande,arial,sans-serif;font-size:13px;line-clamp:3;line-height:16px;max-height:48px;overflow:hidden;text-overflow:-o-ellipsis-lastline}.CodeMirror-hint-information .content p:first-child{margin-top:0}.CodeMirror-hint-information .content p:last-child{margin-bottom:0}.CodeMirror-hint-information .infoType{color:#ca9800;cursor:pointer;display:inline;margin-right:.5em}.autoInsertedLeaf.cm-property{animation-duration:6s;animation-name:insertionFade;border-bottom:2px solid hsla(0,0%,100%,0);border-radius:2px;margin:-2px -4px -1px;padding:2px 4px 1px}@keyframes insertionFade{0%,to{background:hsla(0,0%,100%,0);border-color:hsla(0,0%,100%,0)}15%,85%{background:#fbffc9;border-color:#f0f3c0}}div.CodeMirror-lint-tooltip{background-color:#fff;border-radius:2px;border:0;color:#141823;box-shadow:0 1px 3px rgba(0,0,0,.45);font-size:13px;line-height:16px;max-width:430px;opacity:0;padding:8px 10px;transition:opacity .15s;white-space:pre-wrap}div.CodeMirror-lint-tooltip>*{padding-left:23px}div.CodeMirror-lint-tooltip>*+*{margin-top:12px}.graphiql-container .CodeMirror-foldmarker{border-radius:4px;background:#08f;background:linear-gradient(#43a8ff,#0f83e8);box-shadow:0 1px 1px rgba(0,0,0,.2),inset 0 0 0 1px rgba(0,0,0,.1);color:#fff;font-family:arial;font-size:12px;line-height:0;margin:0 3px;padding:0 4px 1px;text-shadow:0 -1px rgba(0,0,0,.1)}.graphiql-container div.CodeMirror span.CodeMirror-matchingbracket{color:#555;text-decoration:underline}.graphiql-container div.CodeMirror span.CodeMirror-nonmatchingbracket{color:red}.cm-comment{color:#999}.cm-punctuation{color:#555}.cm-keyword{color:#b11a04}.cm-def{color:#d2054e}.cm-property{color:#1f61a0}.cm-qualifier{color:#1c92a9}.cm-attribute{color:#8b2bb9}.cm-number{color:#2882f9}.cm-string{color:#d64292}.cm-builtin{color:#d47509}.cm-string-2{color:#0b7fc7}.cm-variable{color:#397d13}.cm-meta{color:#b33086}.cm-atom{color:#ca9800}
@@ -26,6 +27,7 @@ const graphiQLcss = `
 loadCSSFromString(graphiQLcss);
 
 function GraphiQLWrapper(props: {
+  importButton: React.ReactNode;
   url: string;
   headers: Array<{ key: string; value: string }>;
   setUrl: (value: string) => void;
@@ -60,7 +62,9 @@ function GraphiQLWrapper(props: {
             autoFocus
             value={props.url}
             onChange={(e) => props.setUrl(e.target.value)}
+            marginRight={interGridSpacing}
           ></Input>
+          {props.importButton}
         </Box>
       </Box>
       <Box paddingBottom={"16px"}>
@@ -71,7 +75,7 @@ function GraphiQLWrapper(props: {
               display="flex"
               flexDirection="row"
               key={index}
-              paddingBottom={"4px"}
+              paddingBottom={interGridSpacing}
             >
               <Input
                 spellCheck={false}
@@ -85,7 +89,7 @@ function GraphiQLWrapper(props: {
                   newHeaders[index].key = e.target.value;
                   props.setHeaders(newHeaders);
                 }}
-                marginRight="4px"
+                marginRight={interGridSpacing}
               ></Input>
               <Input
                 type={hideHeaderValue(header) ? "password" : "text"}
@@ -97,7 +101,7 @@ function GraphiQLWrapper(props: {
                   newHeaders[index].value = e.target.value;
                   props.setHeaders(newHeaders);
                 }}
-                marginRight="4px"
+                marginRight={interGridSpacing}
               ></Input>
               <Button
                 variant="danger"
@@ -127,16 +131,32 @@ function GraphiQLWrapper(props: {
               });
               props.setHeaders(newHeaders);
             }}
-            marginRight="4px"
+            marginRight={interGridSpacing}
           ></Input>
-          <Input disabled value="" marginRight="4px"></Input>
+          <Input disabled value="" marginRight={interGridSpacing}></Input>
           <div style={{ width: "152px" }}></div>
         </Box>
       </Box>
-
-      <div className="graphiql-container" style={{ height: "60vh" }}>
-        <GraphiQL fetcher={graphQLFetcher} />
-      </div>
+      <Box>
+        <Heading as="h6">Playground</Heading>
+        <div className="graphiql-container" style={{ height: "60vh" }}>
+          <GraphiQL
+            fetcher={graphQLFetcher}
+            onToggleHistory={() => {
+              // bug with graphiql:historyPaneOpen in GraphiQL; boolean is flipped
+              setTimeout(() => {
+                localStorage.setItem("graphiql:historyPaneOpen", "false");
+              }, 100);
+            }}
+            onToggleDocs={() => {
+              // bug with graphiql:docExplorerOpen in GraphiQL; boolean is flipped
+              setTimeout(() => {
+                localStorage.setItem("graphiql:docExplorerOpen", "false");
+              }, 100);
+            }}
+          />
+        </div>
+      </Box>
     </div>
   );
 }
