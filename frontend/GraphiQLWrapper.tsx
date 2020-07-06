@@ -10,10 +10,6 @@ import GraphiQL from "graphiql";
 import { cloneDeep, filter, remove } from "lodash";
 import React from "react";
 import { headerListToObj } from "./header-util";
-import {
-  AIRTABLE_BLOCK_GQL_IMPORT_IMPORT_QUERY,
-  useLocalStorage,
-} from "./local-storage-util";
 import { interGridSpacing } from "./style";
 
 const graphiQLcss = `
@@ -39,11 +35,6 @@ function GraphiQLWrapper(props: {
   setUrl: (value: string) => void;
   setHeaders: (value: Array<{ key: string; value: string }>) => void;
 }) {
-  const [importQuery, setImportQuery] = useLocalStorage(
-    AIRTABLE_BLOCK_GQL_IMPORT_IMPORT_QUERY,
-    ""
-  );
-
   function graphQLFetcher(graphQLParams: any) {
     return fetch(props.url, {
       method: "post",
@@ -166,8 +157,7 @@ function GraphiQLWrapper(props: {
               }, 100);
             }}
             onEditQuery={(query) => {
-              // TODO debounce
-              setImportQuery(query);
+              // TODO debounce & save for import dialog
             }}
           />
         </div>
