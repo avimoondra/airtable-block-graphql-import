@@ -97,7 +97,7 @@ const getRecordDefsByTableFromJsonStructure = (
           const newRecord: RecordDef = {};
           table.fields.forEach((field) => {
             newRecord[field.id] = item[field.name]
-              ? item[field.name].toString()
+              ? item[field.name].toString() // TODO handle object
               : "";
           });
 
