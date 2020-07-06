@@ -92,23 +92,29 @@ const getRecordDefsByTableFromJsonStructure = (
     if (isArray(json[key])) {
       const tableName = key;
       const table = tables.find((table) => table.name === tableName);
-      json[tableName].forEach((item) => {
-        const newRecord: RecordDef = {};
-        table.fields.forEach((field) => {
-          newRecord[field.id] = item[field.name]
-            ? item[field.name].toString()
-            : "";
+      if (table) {
+        json[tableName].forEach((item) => {
+          const newRecord: RecordDef = {};
+          table.fields.forEach((field) => {
+            newRecord[field.id] = item[field.name]
+              ? item[field.name].toString()
+              : "";
+          });
+
+          if (!recordDefsByTable.get(tableName)) {
+            recordDefsByTable.set(tableName, []);
+          }
+          const recordDefs = recordDefsByTable.get(tableName);
+          recordDefs.push(newRecord);
+          recordDefsByTable.set(tableName, recordDefs);
+
+          getRecordDefsByTableFromJsonStructure(
+            item,
+            tables,
+            recordDefsByTable
+          );
         });
-
-        if (!recordDefsByTable.get(tableName)) {
-          recordDefsByTable.set(tableName, []);
-        }
-        const recordDefs = recordDefsByTable.get(tableName);
-        recordDefs.push(newRecord);
-        recordDefsByTable.set(tableName, recordDefs);
-
-        getRecordDefsByTableFromJsonStructure(item, tables, recordDefsByTable);
-      });
+      }
     }
   });
 };
