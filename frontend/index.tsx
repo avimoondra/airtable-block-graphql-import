@@ -1,4 +1,10 @@
-import { Box, Button, initializeBlock, useSynced } from "@airtable/blocks/ui";
+import {
+  Box,
+  Button,
+  initializeBlock,
+  useSynced,
+  useViewport,
+} from "@airtable/blocks/ui";
 import React from "react";
 import GraphiQLWrapper from "./GraphiQLWrapper";
 import ImportDialog from "./ImportDialog";
@@ -8,6 +14,7 @@ import {
 } from "./local-storage-util";
 
 function GraphqlImportBlock() {
+  const viewport = useViewport();
   const [url, setUrl, canSetUrl] = useSynced("url");
   const [
     headers,
@@ -21,7 +28,9 @@ function GraphqlImportBlock() {
     <Box padding={"16px"}>
       {dialogOpen && (
         <ImportDialog
-          onClose={() => setDialogOpen(false)}
+          onClose={() => {
+            setDialogOpen(false);
+          }}
           url={url as string}
           headers={headers}
         ></ImportDialog>
@@ -31,7 +40,10 @@ function GraphqlImportBlock() {
           <Button
             variant="primary"
             onClick={() => {
-              setDialogOpen(true);
+              viewport.enterFullscreenIfPossible();
+              setTimeout(() => {
+                setDialogOpen(true);
+              }, 500);
             }}
           >
             Import

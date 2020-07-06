@@ -44,7 +44,7 @@ export const previewSchema = (base: Base, json) => {
   const _tables: Map<string, Array<any>> = new Map<string, Array<any>>();
   getTablesFromJsonStructure(json, _tables, null);
   const _tableStatuses: { [tableName: string]: TableStatus } = {};
-  _tables.forEach(async (tableFields, tableName, _map) => {
+  _tables.forEach((tableFields, tableName, _map) => {
     let table = base.getTableByNameIfExists(tableName);
     if (!table) {
       _tableStatuses[tableName] = TableStatus.create;
@@ -114,7 +114,7 @@ const getRecordDefsByTableFromJsonStructure = (
 };
 
 export const previewRecords = async (base: Base, json) => {
-  const tables = await findOrCreateTables(base, json);
+  const tables = base.tables;
   let recordDefsByTable = new Map<string, Array<RecordDef>>();
   getRecordDefsByTableFromJsonStructure(json, tables, recordDefsByTable);
   return recordDefsByTable;

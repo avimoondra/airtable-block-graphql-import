@@ -150,7 +150,7 @@ function GraphiQLWrapper(props: {
       </Box>
       <Box>
         <Heading as="h6">Playground</Heading>
-        <div className="graphiql-container" style={{ height: "60vh" }}>
+        <div className="graphiql-container" style={{ height: "50vh" }}>
           <GraphiQL
             fetcher={graphQLFetcher}
             onToggleHistory={() => {
