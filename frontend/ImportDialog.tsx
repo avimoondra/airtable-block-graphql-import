@@ -86,7 +86,7 @@ function ImportDialog(props: {
               Query{" "}
               <Tooltip
                 className="nowrap"
-                content="Your last edited query in GraphiQL"
+                content="Copy/paste from GraphiQL. Headers will automatically be sent!"
               >
                 <Icon name="help" size={10} fillColor={"lightgray"} />
               </Tooltip>
