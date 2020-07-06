@@ -1,5 +1,9 @@
 Custom Block To Import Data via GraphQL
 
+![start](images/start.png)
+![start](images/import.png)
+![start](images/view.png)
+
 # Local development
 
 1. Clone the repo
