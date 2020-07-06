@@ -5,7 +5,6 @@ import {
   Dialog,
   FormField,
   Heading,
-  Icon,
   Input,
   RecordCardList,
   useBase,
@@ -53,27 +52,7 @@ function ImportDialog(props: {
   const [recordDefsByTable, setRecordDefsByTable] = React.useState<
     Map<string, Array<RecordDef>>
   >();
-
-  let previewTableDivs = [];
-  if (previewTables && previewTableStatuses) {
-    previewTables.forEach((tableFields, tableName, _map) => {
-      let icon;
-      if (previewTableStatuses[tableName] === TableStatus.create) {
-        icon = <Icon name="grid"></Icon>;
-      } else if (previewTableStatuses[tableName] === TableStatus.modify) {
-        icon = <Icon name="warning"></Icon>;
-      } else if (previewTableStatuses[tableName] === TableStatus.match) {
-        icon = <Icon name="check"></Icon>;
-      }
-      previewTableDivs.push(
-        <div>
-          table name: {tableName}, {icon}
-          <div>{tableFields.map((field) => field.name)}</div>
-        </div>
-      );
-    });
-    console.log(previewTables);
-  }
+  const [confirmedSchema, setConfirmedSchema] = React.useState(false);
 
   let recordCardListByTable = new Map();
   if (recordDefsByTable) {
@@ -81,11 +60,14 @@ function ImportDialog(props: {
       const table = base.getTableByName(tableName);
       recordCardListByTable.set(
         table,
-        <RecordCardList
-          width={"200px"}
-          records={recordDefs}
-          fields={table.fields}
-        ></RecordCardList>
+        <Box>
+          <b>{tableName}</b> ({recordDefs.length} records)
+          <RecordCardList
+            width={"300px"}
+            records={recordDefs.slice(0, 5)}
+            fields={table.fields}
+          ></RecordCardList>
+        </Box>
       );
     });
   }
@@ -128,12 +110,17 @@ function ImportDialog(props: {
                   })[0] // see wrap
                 : responseData
             );
+            const { tables, tableStatuses } = previewSchema(
+              base,
+              queryResponse
+            );
+            setPreviewTableStatuses(tableStatuses);
+            setPreviewTables(tables);
           }}
         >
           Run
         </Button>
       </Box>
-
       <Box
         height={"200px"}
         overflowY="auto"
@@ -144,45 +131,97 @@ function ImportDialog(props: {
           {isEmpty(queryResponse) ? "" : JSON.stringify(queryResponse, null, 2)}
         </pre>
       </Box>
-      <Box>{previewTableDivs}</Box>
+      {!isEmpty(previewTables) && (
+        <Box marginTop="8px" marginBottom="8px">
+          <Heading as="h6"> {"Tables & Fields"} </Heading>
+          <Box display="flex" flexDirection="row">
+            {Array.from(previewTables).map(([tableName, tableFields]) => {
+              let icon;
+              if (previewTableStatuses[tableName] === TableStatus.create) {
+                icon = "(new)";
+              } else if (
+                previewTableStatuses[tableName] === TableStatus.modify
+              ) {
+                icon = (
+                  <span style={{ color: "rgb(248,43,96)" }}>
+                    (needs attention)
+                  </span>
+                ); // <Icon fillColor="yellow" name="warning"></Icon>;
+              } else if (
+                previewTableStatuses[tableName] === TableStatus.match
+              ) {
+                icon = "(exists)"; // <Icon fillColor="green" name="check"></Icon>;
+              }
+              return (
+                <Box
+                  style={{
+                    border: "1px solid lightgray",
+                    padding: "8px",
+                    borderRadius: "3px",
+                    marginRight: "4px",
+                  }}
+                >
+                  <Box>
+                    <b>{tableName}</b> {icon}
+                  </Box>
+                  <div
+                    style={{
+                      fontWeight: 400,
+                      color: "rgb(137, 137, 137)",
+                      letterSpacing: "0.1em",
+                      fontSize: "11px",
+                      lineHeight: "13px",
+                    }}
+                  >
+                    {tableFields.map((field) => field.name).join(", ")}
+                  </div>
+                </Box>
+              );
+            })}
+          </Box>
+          <Box display="flex" flexDirection="row-reverse">
+            <Button
+              variant="primary"
+              marginTop="8px"
+              onClick={async () => {
+                await findOrCreateTables(base, queryResponse);
+                setConfirmedSchema(true);
+                const recordDefsByTable = await previewRecords(
+                  base,
+                  queryResponse
+                );
+                setRecordDefsByTable(recordDefsByTable);
+              }}
+              disabled={isEmpty(queryResponse)}
+            >
+              Confirm Schema
+            </Button>
+          </Box>
+        </Box>
+      )}
 
-      <Button
-        variant="primary"
-        onClick={async () => {
-          await findOrCreateTables(base, queryResponse);
-          const { tables, tableStatuses } = previewSchema(base, queryResponse);
-          setPreviewTableStatuses(tableStatuses);
-          setPreviewTables(tables);
-        }}
-        disabled={isEmpty(queryResponse)}
-      >
-        Confirm Schema
-      </Button>
-
-      <Button
-        onClick={async () => {
-          const recordDefsByTable = await previewRecords(base, queryResponse);
-          console.log(recordDefsByTable);
-          setRecordDefsByTable(recordDefsByTable);
-        }}
-      >
-        Preview Data
-      </Button>
-
-      <Box display="flex" flexDirection="row" height="300px">
-        {Array.from(recordCardListByTable).map(([key, value]) => {
-          return value;
-        })}
-      </Box>
-
-      <Button
-        onClick={() => {
-          insertRecordsIntoTables(base, queryResponse);
-          insertQueryIntoQueriesTable(base, importQuery, props.url);
-        }}
-      >
-        Import
-      </Button>
+      {confirmedSchema && (
+        <Box>
+          <Heading as="h6">Data</Heading>
+          <Box display="flex" flexDirection="row" height="300px">
+            {Array.from(recordCardListByTable).map(([key, value]) => {
+              return value;
+            })}
+          </Box>
+          <Box display="flex" flexDirection="row-reverse">
+            <Button
+              marginTop="8px"
+              variant="primary"
+              onClick={() => {
+                insertRecordsIntoTables(base, queryResponse);
+                insertQueryIntoQueriesTable(base, importQuery, props.url);
+              }}
+            >
+              Import
+            </Button>
+          </Box>
+        </Box>
+      )}
     </Dialog>
   );
 }
