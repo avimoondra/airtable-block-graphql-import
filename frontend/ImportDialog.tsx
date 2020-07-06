@@ -5,8 +5,10 @@ import {
   Dialog,
   FormField,
   Heading,
+  Icon,
   Input,
   RecordCardList,
+  Tooltip,
   useBase,
 } from "@airtable/blocks/ui";
 import { JSONPath } from "jsonpath-plus";
@@ -77,7 +79,20 @@ function ImportDialog(props: {
       <Dialog.CloseButton />
       <Heading>Import</Heading>
       <Box display="flex" alignItems="center">
-        <FormField label="Query" marginRight={interGridSpacing}>
+        <FormField
+          label={
+            <span>
+              Query{" "}
+              <Tooltip
+                className="nowrap"
+                content="Your last edited query in GraphiQL"
+              >
+                <Icon name="help" size={10} fillColor={"lightgray"} />
+              </Tooltip>
+            </span>
+          }
+          marginRight={interGridSpacing}
+        >
           <Input
             value={importQuery}
             onChange={(e) => {
@@ -85,7 +100,23 @@ function ImportDialog(props: {
             }}
           ></Input>
         </FormField>
-        <FormField label="JSON path" marginRight={interGridSpacing}>
+        <FormField
+          label={
+            <span>
+              JSON path{" "}
+              <Tooltip className="nowrap" content="What is JSONPath?">
+                <a
+                  className="pointer link-quiet"
+                  href="https://jsonpath.com/"
+                  target="_new"
+                >
+                  <Icon name="help" size={10} fillColor={"lightgray"} />
+                </a>
+              </Tooltip>
+            </span>
+          }
+          marginRight={interGridSpacing}
+        >
           <Input
             value={jsonPath}
             onChange={(e) => {
@@ -118,7 +149,7 @@ function ImportDialog(props: {
             setPreviewTables(tables);
           }}
         >
-          Run
+          Request Data
         </Button>
       </Box>
       <Box
