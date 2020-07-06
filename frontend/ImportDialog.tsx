@@ -166,7 +166,7 @@ function ImportDialog(props: {
       {!isEmpty(previewTables) &&
         !isEmpty(previewTableStatuses) &&
         !isEmpty(queryResponse) && (
-          <Box marginTop="8px" marginBottom="8px">
+          <Box marginTop="20px" marginBottom="8px">
             <Heading as="h6"> {"Tables & Fields"} </Heading>
             <Box display="flex" flexDirection="row">
               {Array.from(previewTables).map(([tableName, tableFields]) => {
@@ -177,8 +177,17 @@ function ImportDialog(props: {
                   previewTableStatuses[tableName] === TableStatus.modify
                 ) {
                   icon = (
-                    <span style={{ color: "rgb(248,43,96)" }}>
-                      (needs attention)
+                    <span>
+                      <span style={{ color: "rgb(248,43,96)" }}>
+                        (schema mismatch){" "}
+                      </span>
+                      <Tooltip content="Either delete the table, or update the fields">
+                        <Icon
+                          name="help"
+                          size={10}
+                          fillColor={"rgb(248,43,96)"}
+                        />
+                      </Tooltip>
                     </span>
                   );
                 } else if (
