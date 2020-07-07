@@ -1,6 +1,6 @@
 # Custom Block To Import Data via GraphQL
 
-![start](images/1-start.png)
+![start](images/1-explore.png)
 
 ---
 
