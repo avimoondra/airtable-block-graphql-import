@@ -1,14 +1,14 @@
 # Custom Block To Import Data via GraphQL
 
-![start](images/start.png)
+![start](images/1. start.png)
 
 ----------------
 
-![start](images/import.png)
+![start](images/2. import.png)
 
 ----------------
 
-![start](images/view.png)
+![start](images/3. view.png)
 
 
 # Local development
