@@ -11,7 +11,7 @@ Features
 
 Future
 - feedback! and bug bashing!
-- disable import button if not editor/collaborator (has permission to create table/insert records)
+- disable import button if not editor/collaborator (has permission to create table/insert records) [(PR #2)](https://github.com/avimoondra/airtable-block-graphql-import/pull/2)
 - schema discovery based on parsing the query vs. parsing a sample of the data
 - support for non-array (object) nestings in the graph
 - better types that match the GraphQL schema (not just "single line text" for all fields)
