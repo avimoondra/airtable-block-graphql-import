@@ -19,6 +19,7 @@ Future
 - add prompts to include ID at every level of nesting (or prompt the user to do so by parsing the query)
 - disallow mutations and subscriptions in GraphiQL and in importer
 - support for Relays spec (nodes, edges, etc.)
+- use monaco editor for query - https://github.com/microsoft/monaco-typescript
 
 Screenshots
 
