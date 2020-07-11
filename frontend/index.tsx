@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   initializeBlock,
+  useBase,
   useSynced,
   useViewport,
 } from "@airtable/blocks/ui";
@@ -14,6 +15,7 @@ import {
 } from "./local-storage-util";
 
 function GraphqlImportBlock() {
+  const base = useBase();
   const viewport = useViewport();
   const [url, setUrl, canSetUrl] = useSynced("url");
   const [
@@ -38,6 +40,7 @@ function GraphqlImportBlock() {
       <GraphiQLWrapper
         importButton={
           <Button
+            disabled={!base.unstable_hasPermissionToCreateTable()}
             variant="primary"
             onClick={() => {
               viewport.enterFullscreenIfPossible();
